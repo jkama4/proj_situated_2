@@ -1,0 +1,1 @@
+python -m rl_zoo3.train --algo ddpg --env FetchReachDense-v4 --gym-packages gymnasium_robotics -c hyperparams.yaml

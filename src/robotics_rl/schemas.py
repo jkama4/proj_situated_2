@@ -33,7 +33,7 @@ class Float32Wrapper(gym.Wrapper):
         return {k: v.astype(np.float32) for k, v in obs.items()}
 
 
-def make_env():
+def make_env(env_id: str):
     gym.register_envs(gymnasium_robotics)
-    env = Monitor(gym.make("FetchPushDense-v4", render_mode="human"))
+    env = Monitor(gym.make(env_id, render_mode="human"))
     return Float32Wrapper(env)

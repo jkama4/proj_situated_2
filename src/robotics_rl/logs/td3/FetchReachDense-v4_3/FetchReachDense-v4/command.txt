@@ -1,0 +1,1 @@
+C:\Users\robin\AppData\Local\Programs\Python\Python312\python.exe -m rl_zoo3.train --algo td3 --env FetchReachDense-v4 --gym-packages gymnasium_robotics -c hyperparams/td3.yml --seed 2 --eval-freq 2500 --eval-episodes 10 -f logs --verbose 1

@@ -6,20 +6,35 @@ authors = [
     {name = "Your Name",email = "you@example.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10,<3.13" 
+# ^ CRITICAL: Must be less than 3.13 for Torch Windows GPU wheels
+
 dependencies = [
-    "gymnasium (>=1.2.3,<2.0.0)",
+    "gymnasium[other] (>=1.2.3,<2.0.0)",
     "rl-zoo3 (>=2.7.0,<3.0.0)",
     "pathlib (>=1.0.1,<2.0.0)",
-    "ipython (>=9.9.0,<10.0.0)",
+    "ipython (>=8.0.0,<9.0.0)", 
+    # ^ Downgraded ipython slightly to match older python compatibility if needed
     "gymnasium-robotics (>=1.4.2,<2.0.0)",
-    "optuna (>=4.7.0,<5.0.0)"
+    "optuna (>=4.0.0,<5.0.0)"
 ]
 
 [tool.poetry]
 packages = [{include = "robotics_rl", from = "src"}]
 
-
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+# --- SOURCE CONFIGURATION ---
+[[tool.poetry.source]]
+name = "pytorch_gpu"
+url = "https://download.pytorch.org/whl/cu124"
+priority = "explicit"
+
+# --- GPU DEPENDENCIES ---
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+torch = {version = "2.5.1", source = "pytorch_gpu"}
+torchvision = {version = "0.20.1", source = "pytorch_gpu"}
+torchaudio = {version = "2.5.1", source = "pytorch_gpu"}

@@ -19,14 +19,8 @@ os.makedirs(save_path, exist_ok=True)
 gym.register_envs(gymnasium_robotics)
 
 if __name__ == "__main__":
-    print(f"--- HARDWARE CHECK ---")
-    print(f"Device: {device.upper()}")
-    print(f"CPU Cores Available: {os.cpu_count()}")
-    print(f"----------------------")
 
     n_envs = 16
-    
-    print(f"Spawning {n_envs} parallel environments via SubprocVecEnv...")
     
     train_env = make_vec_env(
         "FetchPickAndPlace-v4", 
@@ -54,8 +48,6 @@ if __name__ == "__main__":
         save_path=save_path,
         name_prefix="sac_checkpoint"
     )
-
-    print("Initializing SAC + HER with RTX 4090 Optimizations...")
     
     model = SAC(
         "MultiInputPolicy",
@@ -80,11 +72,9 @@ if __name__ == "__main__":
         device=device
     )
 
-    # ---------------------------------------------------------
-    # 6. TRAINING LOOP
-    # ---------------------------------------------------------
+    # Training start
     total_timesteps = 1_000_000
-    print(f"Starting training for {total_timesteps} timesteps...")
+    print(f"Starting training for {total_timesteps} timesteps")
     start_time = time.time()
     
     model.learn(
@@ -94,7 +84,7 @@ if __name__ == "__main__":
     
     end_time = time.time()
     total_time_min = (end_time - start_time) / 60
-    print(f"Training Finished in {total_time_min:.2f} minutes.")
+    print(f"Training finished in {total_time_min:.2f} minutes.")
 
     # Final Save
     final_path = os.path.join(save_path, "final_model_pick_place.zip")

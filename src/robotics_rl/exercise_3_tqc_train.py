@@ -5,7 +5,6 @@ import gymnasium_robotics
 import numpy as np
 import time
 
-# IMPORT TQC FROM CONTRIB
 from sb3_contrib import TQC
 from stable_baselines3 import HerReplayBuffer
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
@@ -13,7 +12,6 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback
 from stable_baselines3.common.monitor import Monitor
 
-# TQC uses entropy for exploration, so we do not need NormalActionNoise
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -23,14 +21,8 @@ os.makedirs(save_path, exist_ok=True)
 gym.register_envs(gymnasium_robotics)
 
 if __name__ == "__main__":
-    print(f"--- HARDWARE CHECK ---")
-    print(f"Device: {device.upper()}")
-    print(f"CPU Cores Available: {os.cpu_count()}")
-    print(f"----------------------")
 
     n_envs = 16
-    
-    print(f"Spawning {n_envs} parallel environments via SubprocVecEnv...")
     
     train_env = make_vec_env(
         "FetchPickAndPlace-v4", 
@@ -60,8 +52,6 @@ if __name__ == "__main__":
         save_path=save_path,
         name_prefix="tqc_checkpoint"
     )
-
-    print("Initializing TQC + HER with RTX 4090 Optimizations...")
     
     model = TQC(
         "MultiInputPolicy",
@@ -72,15 +62,14 @@ if __name__ == "__main__":
             goal_selection_strategy="future",
         ),
         verbose=1,
-        learning_rate=3e-4,
+        learning_rate=0.0010108124085550568,
         
-        gamma=0.99,
+        gamma=0.98,
         tau=0.005,
         
         batch_size=1024,
         buffer_size=1_000_000,
         
-        # TQC Specific: n_critics is usually 2, quantiles logic is internal
         policy_kwargs=dict(net_arch=[512, 512, 512], n_critics=2),
 
         train_freq=1,
@@ -89,11 +78,10 @@ if __name__ == "__main__":
         device=device
     )
 
-    # ---------------------------------------------------------
-    # 6. TRAINING LOOP
-    # ---------------------------------------------------------
+    # Training start
+
     total_timesteps = 1_000_000
-    print(f"Starting training for {total_timesteps} timesteps...")
+    print(f"Start traing for {total_timesteps} timesteps")
     start_time = time.time()
     
     model.learn(
@@ -103,7 +91,7 @@ if __name__ == "__main__":
     
     end_time = time.time()
     total_time_min = (end_time - start_time) / 60
-    print(f"Training Finished in {total_time_min:.2f} minutes.")
+    print(f"Training finished in {total_time_min:.2f} minutes")
 
     # Final Save
     final_path = os.path.join(save_path, "final_model_pick_place.zip")

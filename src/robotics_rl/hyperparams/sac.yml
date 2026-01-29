@@ -1,10 +1,9 @@
-FetchReach-v4:
+FetchReachDense-v4:
   batch_size: 256
+  ent_coef: auto
   gradient_steps: 1
   learning_rate: 0.0010108124085550568
-  n_timesteps: 100000
-  noise_std: 0.37169319553029
-  noise_type: ornstein-uhlenbeck
+  n_timesteps: 60000
   policy: MultiInputPolicy
   policy_kwargs: dict(net_arch=[400, 300])
   train_freq: 1

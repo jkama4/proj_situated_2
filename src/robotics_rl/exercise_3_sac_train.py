@@ -81,10 +81,7 @@ if __name__ == "__main__":
         total_timesteps=total_timesteps, 
         callback=[eval_callback, checkpoint_callback]
     )
-    
-    end_time = time.time()
-    total_time_min = (end_time - start_time) / 60
-    print(f"Training finished in {total_time_min:.2f} minutes.")
+
 
     # Final Save
     final_path = os.path.join(save_path, "final_model_pick_place.zip")
